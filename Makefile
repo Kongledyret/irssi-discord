@@ -13,9 +13,9 @@ MOD = test
 
 ### You shouldn't need to edit anything beyond this point ###
 
-LIB_NAME = lib$(MODULE_NAME).so
-CFLAGS = -Wall -O2 -Werror -g -DMODULE_NAME=\"$(MODULE_NAME)\"
-LDFLAGS = -avoid-version -module -bundle -flat_namespace -undefined suppress
+LIB_NAME = lib$(MOD).so
+CFLAGS = -Wall -O2 -Werror -g -DMODULE_NAME=\"$(MOD)\"
+LDFLAGS = -flat_namespace -undefined suppress
 
 # When you start adding more components to your module, add them here.
 OBJECTS = test_core.o \
