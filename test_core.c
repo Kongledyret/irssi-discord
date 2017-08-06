@@ -32,3 +32,13 @@ void test_init() {
 void test_deinit() {
     print_unload_message();
 }
+
+#ifdef IRSSI_ABI_VERSION
+/*
+ *  * irssi abicheck()
+ *   */
+void test_abicheck(int *version)
+{
+		*version = IRSSI_ABI_VERSION;
+}
+#endif
