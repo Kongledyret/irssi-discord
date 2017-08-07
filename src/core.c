@@ -20,41 +20,15 @@
  *
  */
 
-#include "test_core.h"
-#include <irssi.h>
+#include "core.h"
+#include "irssi.h"
 
-#include "servers-setup.h"
+#include "impl.h"
 
-#include "test_impl.h"
 
-#define PROTOCOL_NAME "TEST"
-
-static CHATNET_REC *create_chatnet(void) {
-	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-						"Hello, World. xxx \"%s\"", MODULE_NAME);
-	return g_new0(CHATNET_REC, 1);
-}
-static SERVER_SETUP_REC *create_server_setup(void) {
-	// This one
-	//
-	return g_new0(SERVER_SETUP_REC, 1);
-}
-static SERVER_CONNECT_REC *create_server_connect(void) {
-	SERVER_CONNECT_REC *conn;
-
-	conn = g_new0(SERVER_CONNECT_REC, 1);
-	return (SERVER_CONNECT_REC *)conn;
-}
-
-SERVER_REC *server_init_connect(SERVER_CONNECT_REC *connrec) {
-	SERVER_REC *server;
-	return server;
-}
-SERVER_REC *server_connect(SERVER_CONNECT_REC *conn) {
-	SERVER_REC *server = NULL;
-	return server;
-}
-
+#include "servers.h"
+#include "channels.h"
+#include "queries.h"
 
 /*
 CHANNEL_SETUP_REC *create_channel_setup(void) {
@@ -66,31 +40,60 @@ void *destroy_server_connect(SERVER_CONNECT_REC *conn) {
 */
 
 
+#include <servers-setup.h>
+#include <servers.h>
+#include <chatnets.h>
+#include <channels-setup.h>
+static CHATNET_REC *create_chatnet(void)
+{
+        return g_malloc0(sizeof(CHATNET_REC));
+}
+
+static SERVER_SETUP_REC *create_server_setup(void)
+{
+        return g_malloc0(sizeof(SERVER_SETUP_REC));
+}
+
+static CHANNEL_SETUP_REC *create_channel_setup(void) {
+        return g_malloc0(sizeof(CHANNEL_SETUP_REC));
+}
+
+static SERVER_CONNECT_REC *create_server_connect(void) {
+	return g_malloc0(sizeof(SERVER_CONNECT_REC));
+}
+
+static void destroy_server_connect(SERVER_CONNECT_REC *conn) {
+}
+
+#include "channels.h"
+
 void test_init() {
 	CHAT_PROTOCOL_REC *rec;
 	rec = g_new0(CHAT_PROTOCOL_REC, 1);
 	rec->name = PROTOCOL_NAME;
-	rec->fullname = "Discord wrapper for irc";
-	rec->chatnet = "testnet";
+	rec->fullname = "Discord wrapper";
+	rec->chatnet = "test";
+
 	rec->case_insensitive = FALSE;
 
 	rec->create_chatnet = create_chatnet;
 	rec->create_server_setup = create_server_setup;
+	rec->create_channel_setup = create_channel_setup;
 	rec->create_server_connect = create_server_connect;
-	//rec->create_channel_setup
-	//rec->destroy_server_connect
-	rec->server_init_connect = server_init_connect;
-	rec->server_connect = (void (*)(SERVER_REC *))server_connect;
-	//rec->channel_create
-	//rec->query_create
-	//
-	//
+	rec->destroy_server_connect = destroy_server_connect;
+
+	rec->server_init_connect = test_server_init_connect;
+	rec->server_connect = test_server_connect;
+	rec->channel_create = (CHANNEL_REC *(*) (SERVER_REC *, const char *, const char *, int)) test_channel_create;
+	rec->query_create = (QUERY_REC *(*) (const char *, const char *, int)) test_query_create;
 
 	chat_protocol_register(rec);
 	g_free(rec);
 
 	module_register(MODULE_NAME, "core");
 	print_load_message();
+	//SERVER_SETUP_REC *sserver = server_setup_find(address, port, chatnet);
+
 }
 
 void test_deinit() {

@@ -1,57 +1,72 @@
+MAKEFLAGS += --warn-undefined-variables
+.DEFAULT_GOAL := all
+
+DEBUG = false
+
 ### Edit these parameters ###
 
-# change this to 'find' if you're on a decent system.
-FIND = find # stupid OSX non-gnu defaults.
+RM += -r
 
 # Where your irssi include files live. You might need to install an
 # 'irssi-dev' package or something like that.
 IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
 
-# probably $(HOME)/.irssi for most people.
-IRSSI_USER_DIR := $(PROJECTS)/disord/irssi
-MOD = test
+MODULE_NAME = test
 
 ### You shouldn't need to edit anything beyond this point ###
 
-LIB_NAME = lib$(MOD).so
-CFLAGS = -Wall -O2 -Werror -g -DMODULE_NAME=\"$(MOD)\"
-LDFLAGS = -flat_namespace -undefined suppress
+SRCDIR = src/
+SRCS := $(wildcard $(SRCDIR)/*.c)
+HEAD := $(wildcard $(SRCDIR)/*.h)
+
+CFLAGS = -Wall -Werror -g -D MODULE_NAME=\"$(MODULE_NAME)\"
+LDFLAGS = -flat_namespace -undefined suppress -l curl
 
 # When you start adding more components to your module, add them here.
-OBJECTS = test_core.o \
-          test_impl.o
+LIBDIR = lib/
+LIBS = lib$(MODULE_NAME).so
+LIBS := $(addprefix $(LIBDIR)/,$(LIBS))
 
-IRSSI_INCLUDE = -I$(IRSSI_DIST) \
-				-I$(IRSSI_DIST)/src \
-				-I$(IRSSI_DIST)/src/fe-common/core \
-				-I$(IRSSI_DIST)/src/core \
-				-I$(IRSSI_DIST)/src/fe-text \
-				-I$(IRSSI_DIST)/src/irc \
-				-I$(IRSSI_DIST)/src/irc/core \
-				-I$(IRSSI_DIST)/src/irc/dcc \
-				-I$(IRSSI_DIST)/src/irc/notifylist
+OBJDIR = obj/
+OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
+#OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
+
+INCLUDE = -I$(IRSSI_DIST) \
+          -I$(IRSSI_DIST)/src \
+          -I$(IRSSI_DIST)/src/fe-common/core \
+          -I$(IRSSI_DIST)/src/core \
+          -I$(IRSSI_DIST)/src/fe-text \
+          -I$(IRSSI_DIST)/src/irc \
+          -I$(IRSSI_DIST)/src/irc/core \
+          -I$(IRSSI_DIST)/src/irc/dcc \
+          -I$(IRSSI_DIST)/src/irc/notifylist
 
 
 GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)
 
-all: $(LIB_NAME)
+.PHONY: all
+.DEFAULT: all
+all: $(LIBS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(GLIB_CFLAGS) $(IRSSI_INCLUDE) -I. -fPIC -c $<
-
-$(LIB_NAME): $(OBJECTS)
+$(LIBS): $(OBJS) | $(LIBDIR)
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
-install: $(LIB_NAME)
-	install $< $(IRSSI_USER_DIR)/modules
+$(LIBDIR) $(OBJDIR) $(SRCDIR):
+	mkdir -p $@
 
+#.INTERMEDIATE: $(OBJS)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) -c $(INCLUDE) -o $@ $< $(CFLAGS) $(GLIB_CFLAGS)
+
+
+#install: $(LIBS)
+#$(CC) $(CFLAGS) $(GLIB_CFLAGS) $(IRSSI_INCLUDE) -I $(SRC) -o $@ -fPIC -c $<
+#install $< $(IRSSI_USER_DIR)/modules
+
+.PHONY: clean
 clean:
-	rm -rf *~ *.o *.so core || true
+	$(RM) $(LIBDIR) $(OBJDIR)
 
-TAGS:
-	$(FIND) -type f -exec etags -a -o TAGS {} \;
-
-.default: all
 
 .phony: clean install TAGS
 

@@ -1,0 +1,1 @@
+int authorize(void);

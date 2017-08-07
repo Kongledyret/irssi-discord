@@ -21,6 +21,8 @@
 #ifndef GUARD_TEST_CORE_H
 #define GUARD_TEST_CORE_H 1
 
+#define PROTOCOL_NAME "Discord"
+#define PROTOCOL (chat_protocol_lookup(PROTOCOL_NAME))
 void test_init();
 void test_deinit();
 

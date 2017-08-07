@@ -10,7 +10,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, char **data) {
 	return size * nmemb;
 }
 
-int authorize() {
+int authorize(void) {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	CURL *curl = curl_easy_init();
 	if (curl) {

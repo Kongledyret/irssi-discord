@@ -39,7 +39,6 @@
 #include "queries.h"
 #include "nicklist.h"
 #include "chatnets.h"
-#include "servers-reconnect.h"
 #include "masks.h"
 #include "misc.h"
 #include "rawlog.h"

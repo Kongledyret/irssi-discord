@@ -1,8 +1,8 @@
-#include "test_impl.h"
+#include "impl.h"
 
-#include <irssi.h>
+#include "irssi.h"
 
-#include "discord.c"
+#include "discord.h"
 
 
 void print_load_message(void) {
