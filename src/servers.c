@@ -67,8 +67,11 @@ static void send_message(SERVER_REC *server, string target, string msg, int targ
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 	          "target type: %d", target_type);
 
-	discord_send_message(strtoll(target, (char **)(target + strlen(target)), 10), strdup(msg));
+
+	string msg2 = strdup(msg);
+	discord_send_message(strtoll(target, (char **)(target + strlen(target)), 10), strdup(msg2));
 }
+
 static bool ischannel(SERVER_REC *server, const char *data) {
 	return TRUE;
 }
