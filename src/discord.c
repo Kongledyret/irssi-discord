@@ -162,7 +162,7 @@ void discord_send_message(group_ID id, string message) {
 	handle_authentication(curl, res);
 	/* always cleanup */ 
 
-	printf("%s\n", data);
+	//printf("%s\n", data);
 	curl_easy_cleanup(curl);
 }
 
