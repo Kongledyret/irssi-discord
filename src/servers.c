@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "servers.h"
 
 #include "irssi.h"
@@ -67,6 +69,9 @@ static void send_message(SERVER_REC *server, string target, string msg, int targ
 
 	discord_send_message(strtoll(target, (char **)(target + strlen(target)), 10), strdup(msg));
 }
+static bool ischannel(SERVER_REC *server, const char *data) {
+	return TRUE;
+}
 
 //TODO: signal for "server setup read" to add tokens and/or oath
 
@@ -78,6 +83,7 @@ static void test_server_connect(SERVER_REC *server) {
 	          "test_server_connect");
 
 	server->channels_join = channels_join;
+	server->ischannel = (int (*)(SERVER_REC *, const char *)) ischannel;
 	server->send_message=send_message;
 
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
