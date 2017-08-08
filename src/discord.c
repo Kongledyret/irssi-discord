@@ -18,7 +18,7 @@ size_t json_write_func(void *ptr, size_t size, size_t nmemb, json_t **root_ptr) 
 	//*root_ptr = malloc(0); // Do I need safety?
 	json_error_t error;
 	*root_ptr = json_loads(ptr, 0, &error);
-	printf("error: %s\n", error.text);
+	//printf("error: %s\n", error.text);
 	return size * nmemb;
 }
 
@@ -70,7 +70,7 @@ void handle_authentication(CURL *curl, CURLcode res) {
 		curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &response_code);
 		switch(response_code) {
 			case 200 :
-				printf("authorized\n");
+				//printf("authorized\n");
 				break;
 			case 201 ... 299 :
 			case 401 :
@@ -88,8 +88,6 @@ void handle_authentication(CURL *curl, CURLcode res) {
 }
 
 #include "secret.h"
-typedef unsigned long long group_ID;
-typedef int user_ID;
 //group_ID get_gId_from_user(user_ID uID) {
 group_ID get_gID_from_uID(void) {
 
@@ -128,7 +126,7 @@ group_ID get_gID_from_uID(void) {
 
 }
 
-void send_message(group_ID id, string message) {
+void discord_send_message(group_ID id, string message) {
 	CURL *curl = authenticate(MYTOKEN);
 
 	#define SEND_HEADER_1 "/channels/"
@@ -141,7 +139,7 @@ void send_message(group_ID id, string message) {
 	strcat(header, SEND_HEADER_1);
 	strcat(header, buf);
 	strcat(header, SEND_HEADER_2);
-	printf("%s\n", header);
+	//printf("%s\n", header);
 	curl_easy_setopt(curl, CURLOPT_URL, header);
 
 	#define SEND_CONTENT_1 "{\"content\": \""
@@ -153,8 +151,8 @@ void send_message(group_ID id, string message) {
 	strcat(payload, message);
 	strcat(payload, SEND_CONTENT_2);
 
-	printf("%s\n", payload);
-	printf("%s\n", PRIVMSG_HEADER);
+	//printf("%s\n", payload);
+	//printf("%s\n", PRIVMSG_HEADER);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 	char *data = NULL;
@@ -170,8 +168,8 @@ void send_message(group_ID id, string message) {
 
 int main() {
 	//token_privmsg(MYTOKEN);
-	//send_message(get_gID_from_uID(), "hello this is C");
-	printf("%s\n", get_gateway());
-	//send_message(343599756821397504, "Turns out it just doesnt like single quotes");
+	//discord_send_message(get_gID_from_uID(), "hello this is C");
+	//printf("%s\n", get_gateway());
+	//discord_send_message(343599756821397504, "Turns out it just doesnt like single quotes");
 	//authorize();
 }

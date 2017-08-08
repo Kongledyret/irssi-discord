@@ -4,6 +4,8 @@
 #include <queries.h>
 
 QUERY_REC *test_query_create(const char *server_tag, const char *nick, int automatic) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "query");
 	QUERY_REC *rec = g_new0(QUERY_REC, 1);
 	rec->chat_type = PROTOCOL;
 	rec->name = g_strdup(nick);

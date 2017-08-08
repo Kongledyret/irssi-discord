@@ -2,7 +2,7 @@
 
 #include "irssi.h"
 #include "impl.h"
-#include <servers-setup.h>
+#include <servers.h>
 #include <net-nonblock.h>
 #include <servers.h>
 
@@ -10,7 +10,11 @@
 
 #include "discord.h"
 
-SERVER_REC *test_server_init_connect(SERVER_CONNECT_REC *conn) {
+static SERVER_CONNECT_REC *create_server_connect(void) {
+	return g_malloc0(sizeof(SERVER_CONNECT_REC));
+}
+
+static SERVER_REC *test_server_init_connect(SERVER_CONNECT_REC *conn) {
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 	          "test_server_init_connect");
 
@@ -51,21 +55,54 @@ void test(struct _GIOChannel *huh, void *ptr) {
 	          "loop");
 }
 
-static void channels_join(SERVER_REC *server, const char *channel, int automatic) {
+static void send_message(SERVER_REC *server, string target, string msg, int target_type) {
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-	          "switching to channel: %s", channel);
+	          "target: %s", target);
+
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "msg: %s", msg);
+
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "target type: %d", target_type);
+
+	discord_send_message(strtoll(target, (char **)(target + strlen(target)), 10), strdup(msg));
 }
 
+//TODO: signal for "server setup read" to add tokens and/or oath
 
-void test_server_connect(SERVER_REC *server) {
+#include "channels.h"
+static void test_server_connect(SERVER_REC *server) {
 	//void *data = NULL;
 	//net_connect_nonblock("gateway.discord.gg", 443, &((IPADDR){2, {{{2}}}}), test, data);
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 	          "test_server_connect");
+
 	server->channels_join = channels_join;
+	server->send_message=send_message;
+
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 	          "server is connected: %d", server->connected);
 	server->connected = 1;
 	server_start_connect(server); // TODO: handle return
 	return;
+}
+
+static SERVER_SETUP_REC *create_server_setup(void) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "server_setup");
+	return g_malloc0(sizeof(SERVER_SETUP_REC));
+}
+
+static void destroy_server_connect(SERVER_CONNECT_REC *conn) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "test_server_destroy");
+}
+
+
+void protocol_init_servers(CHAT_PROTOCOL_REC *rec) {
+	rec->server_init_connect = test_server_init_connect;
+	rec->server_connect = test_server_connect;
+	rec->create_server_connect = create_server_connect;
+	rec->create_server_setup = create_server_setup;
+	rec->destroy_server_connect = destroy_server_connect;
 }
