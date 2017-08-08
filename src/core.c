@@ -44,14 +44,16 @@ void *destroy_server_connect(SERVER_CONNECT_REC *conn) {
 #include <servers.h>
 #include <chatnets.h>
 #include <channels-setup.h>
-static CHATNET_REC *create_chatnet(void)
-{
-        return g_malloc0(sizeof(CHATNET_REC));
+static CHATNET_REC *create_chatnet(void) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "create_chatnet");
+	return g_malloc0(sizeof(CHATNET_REC));
 }
 
-static SERVER_SETUP_REC *create_server_setup(void)
-{
-        return g_malloc0(sizeof(SERVER_SETUP_REC));
+static SERVER_SETUP_REC *create_server_setup(void) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "server_setup");
+	return g_malloc0(sizeof(SERVER_SETUP_REC));
 }
 
 static CHANNEL_SETUP_REC *create_channel_setup(void) {
@@ -63,9 +65,16 @@ static SERVER_CONNECT_REC *create_server_connect(void) {
 }
 
 static void destroy_server_connect(SERVER_CONNECT_REC *conn) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "test_server_destroy");
 }
 
 #include "channels.h"
+
+void sig_looking(SERVER_REC *server) {
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+	          "yo");
+}
 
 void test_init() {
 	CHAT_PROTOCOL_REC *rec;
@@ -92,9 +101,11 @@ void test_init() {
 
 	module_register(MODULE_NAME, "core");
 	print_load_message();
-	//SERVER_SETUP_REC *sserver = server_setup_find(address, port, chatnet);
+
+	settings_add_str("Discord", "test_test", "");
 
 }
+
 
 void test_deinit() {
     print_unload_message();

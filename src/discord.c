@@ -3,7 +3,7 @@
 #include <jansson.h>
 #include <string.h>
 
-typedef char *string;
+#include "discord.h"
 
 size_t writefunc(void *ptr, size_t size, size_t nmemb, char **data) {
 	//https://stackoverflow.com/questions/2329571/c-libcurl-get-output-into-a-string

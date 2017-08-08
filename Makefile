@@ -20,7 +20,7 @@ SRCS := $(wildcard $(SRCDIR)/*.c)
 HEAD := $(wildcard $(SRCDIR)/*.h)
 
 CFLAGS = -Wall -Werror -g -D MODULE_NAME=\"$(MODULE_NAME)\"
-LDFLAGS = -flat_namespace -undefined suppress -l curl
+LDFLAGS = -flat_namespace -undefined suppress -l curl -l jansson
 
 # When you start adding more components to your module, add them here.
 LIBDIR = lib/
