@@ -26,6 +26,7 @@
 #include "impl.h"
 
 
+#include "protocol.h"
 #include "servers.h"
 #include "channels.h"
 #include "queries.h"
@@ -50,6 +51,7 @@ void test_init() {
 
 	rec->create_chatnet = create_chatnet;
 
+	protocol_init();
 	protocol_init_servers(rec);
 	protocol_init_channels(rec);
 	rec->query_create = (QUERY_REC *(*) (const char *, const char *, int)) test_query_create;

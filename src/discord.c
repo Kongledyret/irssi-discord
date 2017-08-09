@@ -42,6 +42,7 @@ const char *get_gateway(void) {
 	return gateway; // TODO: implement safety
 }
 
+#include "secret.h"
 CURL *authenticate(char *token) {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	CURL *curl = curl_easy_init();
@@ -87,7 +88,8 @@ void handle_authentication(CURL *curl, CURLcode res) {
 	}
 }
 
-#include "secret.h"
+/*
+ * BROKEN
 //group_ID get_gId_from_user(user_ID uID) {
 group_ID get_gID_from_uID(void) {
 
@@ -102,7 +104,7 @@ group_ID get_gID_from_uID(void) {
 
 	CURLcode res = curl_easy_perform(curl);
 	handle_authentication(curl, res);
-	/* always cleanup */ 
+	// always cleanup
 
 	json_error_t error;
 	json_t *root = json_loads(data, 0, &error);
@@ -125,6 +127,7 @@ group_ID get_gID_from_uID(void) {
 
 
 }
+*/
 
 void discord_send_message(group_ID id, string message) {
 	CURL *curl = authenticate(MYTOKEN);
