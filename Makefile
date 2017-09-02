@@ -16,9 +16,6 @@ SRCDIR = src/
 SRCS := $(wildcard $(SRCDIR)/*.c)
 HEAD := $(wildcard $(SRCDIR)/*.h)
 
-CFLAGS = -Wall -Werror -g -D NAME=\"$(NAME)\"
-LDFLAGS = -flat_namespace -undefined suppress
-
 # When you start adding more components to your module, add them here.
 LIBDIR = lib/
 LIBS = lib$(NAME).so
@@ -29,6 +26,9 @@ OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 #OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
 
 INCDIR = include/
+
+CFLAGS = -Wall -Werror -g -D NAME=\"$(NAME)\" -D"UOFF_T_LONG_LONG=1"
+LDFLAGS = -flat_namespace -undefined suppress
 
 #IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
 IRSSI_DIST := $(INCDIR)/irssi
