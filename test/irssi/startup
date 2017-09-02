@@ -1,2 +1,2 @@
-/load lib/libtest.so
+/load $LIB
 /reload
