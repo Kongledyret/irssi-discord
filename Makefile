@@ -50,7 +50,7 @@ $(LIBDIR) $(OBJDIR) $(SRCDIR):
 	mkdir -p $@
 
 #.INTERMEDIATE: $(OBJS)
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(SRCDIR)/%.h | $(OBJDIR)
 	$(CC) -c $(INCLUDE) -o $@ $< $(CFLAGS) $(GLIB_CFLAGS)
 
 
