@@ -4,8 +4,11 @@
 
 #include "utils.h"
 
+#include "protocol.h"
+
 void NAMESPACE(init)() {
 	debug();
+	protocol_init();
 	module_register(MODULE_NAME, "core");
 }
 void NAMESPACE(deinit)() {
