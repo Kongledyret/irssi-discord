@@ -66,5 +66,5 @@ clean:
 .phony: clean install TAGS
 
 test: all
-	irssi --home=test/irssi
+	LIB=$(abspath $(LIBS)) irssi --home=test/irssi
 	
