@@ -1,0 +1,39 @@
+servers = (
+  #{ address="gateway.discord.gg"; chatnet = "discord"; port = "443";
+  #{ address = ""; port = ""; chatnet = "discord"; tls = "Yes"; }
+  {
+    address = "";
+    chatnet = "Discord";
+    tls = "yes";
+    tls_verify = "yes";
+		token = "<TOKEN>";
+  },
+  { address = "echo.websockets.org"; port = "80"; chatnet = "echo"; },
+  { address = "localhost"; port = "1234"; chatnet = "localhost"; }
+);
+
+chatnets = {
+  Discord = {
+    type = "Discord";
+    username = "mjsir911";
+  };
+  echo = { type = "Discord"; };
+  localhost = { type = "Discord"; };
+};
+
+channels = (
+  { 
+    name = "343599756821397504";
+    chatnet = "Discord";
+    autojoin = "Yes";
+  }
+);
+
+settings = {
+  core = {
+    real_name = "Marco Sirabella";
+    user_name = "msirabella";
+    nick = "msirabella";
+  };
+  "fe-text" = { actlist_sort = "refnum"; };
+};
