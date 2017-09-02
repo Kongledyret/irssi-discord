@@ -33,7 +33,8 @@ LDFLAGS = -flat_namespace -undefined suppress
 #IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
 IRSSI_DIST := $(INCDIR)/irssi
 
-INCLUDE = -I $(IRSSI_DIST)
+INCLUDE = -I $(INCDIR) \
+          -I $(IRSSI_DIST)/src/core/ -I $(IRSSI_DIST)/src/ # src/utils.h
 #LIBRARY = -l curl -l jansson
 
 
