@@ -33,8 +33,13 @@ static bool is_channel(SERVER_REC *server, const char *data) {
 	return true;
 }
 
-static void send_message(SERVER_REC *server, const char *target, const char *msg, int target_type) {
+#include "servers.h"
+
+#include "discord.h"
+
+static void send_message(DISCORD_SERVER_REC *server, const char *target, const char *msg, int target_type) {
 	debug();
+	discord_send_message(server->tok, target, msg);
 }
 
 static void sig_connected(SERVER_REC *server) {
@@ -44,7 +49,7 @@ static void sig_connected(SERVER_REC *server) {
 	 */
 	server->channels_join = join;
 	server->ischannel = (int (*)(SERVER_REC *, const char *)) is_channel;
-	server->send_message = send_message;
+	server->send_message = (void (*)(SERVER_REC *, string, string, int))send_message;
 }
 
 void channels_protocol_init(CHAT_PROTOCOL_REC *rec) {

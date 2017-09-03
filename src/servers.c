@@ -16,17 +16,19 @@ static SERVER_CONNECT_REC *create(void) {
 	return g_new0(SERVER_CONNECT_REC, 1);
 }
 
-static SERVER_REC *init(SERVER_CONNECT_REC *connrec) {
+static DISCORD_SERVER_REC *init(DISCORD_SERVER_CONNECT_REC *connrec) {
 	debug();
-	SERVER_REC *server = g_new0(SERVER_REC, 1);
+	DISCORD_SERVER_REC *server = g_new0(DISCORD_SERVER_REC, 1);
 	server->chat_type = PROTOCOL;
 	server->connrec = connrec;
+
+	server->tok = connrec->tok;
 
 	connrec->address = "gateway.discord.gg";
 	connrec->port = 443; // TODO: make this default a better way
 
 	server_connect_ref(SERVER_CONNECT(connrec));
-	server_connect_init(server);
+	server_connect_init((SERVER_REC *) server);
 	return server;
 }
 
@@ -49,7 +51,7 @@ static void destroy(SERVER_CONNECT_REC *conn) {
 
 void servers_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->create_server_connect = create;
-	rec->server_init_connect = init;
+	rec->server_init_connect = (SERVER_REC *(*)(SERVER_CONNECT_REC *)) init;
 	rec->server_connect = connect;
 	rec->destroy_server_connect = destroy;
 

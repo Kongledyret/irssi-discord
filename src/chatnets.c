@@ -9,21 +9,21 @@
 
 #include "utils.h"
 
-static CHATNET_REC *create(void) {
+static DISCORD_CHATNET_REC *create(void) {
 	debug();
-	return g_new0(CHATNET_REC, 1);
+	return g_new0(DISCORD_CHATNET_REC, 1);
 }
 
 void chatnets_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->chatnet = MODULE_NAME;
-	rec->create_chatnet = create;
+	rec->create_chatnet = (CHATNET_REC *(*)(void))create;
 }
 
 #include <irssi/src/lib-config/iconfig.h>
 
-static void read_config(CHAT_PROTOCOL_REC *proto, CONFIG_NODE *node) {
+static void read_config(DISCORD_CHATNET_REC *rec, CONFIG_NODE *node) {
 	debug();
-	printf(config_node_get_str(node, "email", NULL));
+	rec->email = config_node_get_str(node, "email", NULL);
 }
 
 #include <irssi/src/core/signals.h>
