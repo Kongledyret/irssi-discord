@@ -2,8 +2,11 @@
 
 typedef const char *string;
 
-typedef const char channel_ID[19];
+typedef const char chID[19];
 typedef string token;
 
 #define BASE_API "https://discordapp.com/api/v" DISCORD_VERSION
-void discord_send_message(token tok, channel_ID target, string msg);
+void discord_send_message(token tok, chID target, string msg);
+
+#include <jansson.h>
+json_t *discord_get_channel_info(token tok, chID channel);

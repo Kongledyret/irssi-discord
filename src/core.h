@@ -1,6 +1,9 @@
 #ifndef CORE_GLOCK
 #define CORE_GLOCK
 
+// Various types
+typedef unsigned char byte;
+
 #define MODULE discord_
 // TODO: use MODULE in NAMESPACE
 #define NAMESPACE(funcname) discord ##_## funcname 

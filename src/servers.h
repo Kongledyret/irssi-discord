@@ -1,3 +1,5 @@
+#ifndef SERVERS_GLOCK
+#define SERVERS_GLOCK
 #include <irssi/src/common.h>
 #include <irssi/src/core/chat-protocols.h>
 
@@ -15,3 +17,4 @@ typedef struct {
 	#include <irssi/src/core/server-rec.h>
 	token tok;
 } DISCORD_SERVER_REC;
+#endif
