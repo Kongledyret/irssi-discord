@@ -35,8 +35,11 @@ IRSSI_DIST := $(INCDIR)/irssi
 
 INCLUDE = -I $(INCDIR) \
           -I $(IRSSI_DIST)/src/core/ -I $(IRSSI_DIST)/src/ # src/utils.h
-#LIBRARY = -l curl -l jansson
+#LIBRARY = 
 
+# For libcurl
+INCLUDE += $(shell curl-config --cflags)
+LIBRARY += $(shell curl-config --libs)
 
 GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)
 
@@ -45,7 +48,7 @@ GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)
 all: $(LIBS)
 
 $(LIBS): $(OBJS) | $(LIBDIR)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBRARY) $^ -o $@
 
 $(LIBDIR) $(OBJDIR) $(SRCDIR):
 	mkdir -p $@
