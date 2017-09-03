@@ -38,8 +38,8 @@ INCLUDE = -I $(INCDIR) \
 #LIBRARY = 
 
 # For libcurl
-INCLUDE += $(shell curl-config --cflags)
-LIBRARY += $(shell curl-config --libs)
+INCLUDE += $(shell pkg-config libcurl --cflags)
+LIBRARY += $(shell pkg-config libcurl --libs)
 
 GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)
 
