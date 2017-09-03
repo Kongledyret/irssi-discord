@@ -41,6 +41,9 @@ INCLUDE = -I $(INCDIR) \
 INCLUDE += $(shell pkg-config libcurl --cflags)
 LIBRARY += $(shell pkg-config libcurl --libs)
 
+INCLUDE += $(shell pkg-config jansson --cflags)
+LIBRARY += $(shell pkg-config jansson --libs)
+
 GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)
 
 .PHONY: all
