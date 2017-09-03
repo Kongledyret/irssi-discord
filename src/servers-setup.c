@@ -5,8 +5,11 @@
 
 #include <irssi/src/core/servers-setup.h>
 
+#include "utils.h"
+
 static SERVER_SETUP_REC *create(void) {
-		return g_new0(SERVER_SETUP_REC, 1);
+	debug();
+	return g_new0(SERVER_SETUP_REC, 1);
 }
 
 void servers_setup_protocol_init(CHAT_PROTOCOL_REC *rec) {

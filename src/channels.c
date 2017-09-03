@@ -5,10 +5,13 @@
 
 #include <irssi/src/core/channels.h>
 
+#include "utils.h"
+
 static CHANNEL_REC * create(SERVER_REC *server,
                             const char *name,
                             const char *visible_name,
                             int automatic) {
+	debug();
 	return g_new0(CHANNEL_REC, 1);
 }
 
