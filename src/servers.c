@@ -11,9 +11,9 @@
 
 #include "channels.h"
 
-static SERVER_CONNECT_REC *create(void) {
+static DISCORD_SERVER_CONNECT_REC *create(void) {
 	debug();
-	return g_new0(SERVER_CONNECT_REC, 1);
+	return g_new0(DISCORD_SERVER_CONNECT_REC, 1);
 }
 
 static DISCORD_SERVER_REC *init(DISCORD_SERVER_CONNECT_REC *connrec) {
@@ -50,7 +50,7 @@ static void destroy(SERVER_CONNECT_REC *conn) {
 }
 
 void servers_protocol_init(CHAT_PROTOCOL_REC *rec) {
-	rec->create_server_connect = create;
+	rec->create_server_connect = (SERVER_CONNECT_REC *(*)(void)) create;
 	rec->server_init_connect = (SERVER_REC *(*)(SERVER_CONNECT_REC *)) init;
 	rec->server_connect = (void (*)(SERVER_REC *)) connect;
 	rec->destroy_server_connect = destroy;
