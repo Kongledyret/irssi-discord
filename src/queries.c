@@ -11,9 +11,9 @@
 #include "discord.h"
 #include <jansson.h>
 
-DISCORD_QUERY_REC *create(const char *server_tag,
-                   const char *nick,
-                   int automatic) {
+static DISCORD_QUERY_REC *create(const char *server_tag,
+                                 const char *nick,
+                                 int automatic) {
 	debug();
 	DISCORD_QUERY_REC *rec = g_new0(DISCORD_QUERY_REC, 1);
 	rec->chat_type = PROTOCOL;

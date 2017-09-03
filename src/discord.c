@@ -80,3 +80,6 @@ static json_t *generic_get_request(token tok, string URL) {
 json_t *discord_get_channel_info(token tok, chID channel) {
 	return generic_get_request(tok, g_strdup_printf(BASE_API "/channels/%s", channel)); // TODO: memory allocation
 }
+json_t *discord_get_guild_info(token tok, chID guild) {
+	return generic_get_request(tok, g_strdup_printf(BASE_API "/guilds/%s", guild)); // TODO: memory allocation
+}

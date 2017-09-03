@@ -10,3 +10,4 @@ void discord_send_message(token tok, chID target, string msg);
 
 #include <jansson.h>
 json_t *discord_get_channel_info(token tok, chID channel);
+json_t *discord_get_guild_info(token tok, chID channel);
