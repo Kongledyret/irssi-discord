@@ -22,14 +22,6 @@ static SERVER_REC *init(SERVER_CONNECT_REC *connrec) {
 	server->chat_type = PROTOCOL;
 	server->connrec = connrec;
 
-	/*
-	 * Is there a reason to assign these functions when connected and not on
-	 * init?
-	 */
-	server->channels_join = join;
-	server->ischannel = (int (*)(SERVER_REC *, const char *)) is_channel;
-	server->send_message = send_message;
-
 	connrec->address = "gateway.discord.gg";
 	connrec->port = 443; // TODO: make this default a better way
 

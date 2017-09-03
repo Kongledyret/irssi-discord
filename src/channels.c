@@ -1,11 +1,14 @@
 #include "channels.h"
+#include "core.h"
 
 #include <stdbool.h>
 
 #include <irssi/src/common.h>
+#include <irssi/src/core/signals.h>
 #include <irssi/src/core/chat-protocols.h>
 
 #include <irssi/src/core/channels.h>
+#include <irssi/src/core/servers.h>
 
 #include "utils.h"
 
@@ -19,21 +22,33 @@ static CHANNEL_REC * create(SERVER_REC *server,
 	return rec;
 }
 
-void channels_protocol_init(CHAT_PROTOCOL_REC *rec) {
-	rec->channel_create = create;
-}
-
-void join(SERVER_REC *server, const char *data, int automatic) {
+static void join(SERVER_REC *server, const char *data, int automatic) {
 	debug();
 	create(server, data, NULL, automatic);
 }
 
-bool is_channel(SERVER_REC *server, const char *data) {
+static bool is_channel(SERVER_REC *server, const char *data) {
 	debug();
 	printf(data);
 	return true;
 }
 
-void send_message(SERVER_REC *server, const char *target, const char *msg, int target_type) {
+static void send_message(SERVER_REC *server, const char *target, const char *msg, int target_type) {
 	debug();
 }
+
+static void sig_connected(SERVER_REC *server) {
+	/*
+	 * Is there a reason to assign these functions when connected and not on
+	 * init?
+	 */
+	server->channels_join = join;
+	server->ischannel = (int (*)(SERVER_REC *, const char *)) is_channel;
+	server->send_message = send_message;
+}
+
+void channels_protocol_init(CHAT_PROTOCOL_REC *rec) {
+	rec->channel_create = create;
+	signal_add("server connected", (SIGNAL_FUNC) sig_connected); // TODO: move signals out of protocol init
+}
+
