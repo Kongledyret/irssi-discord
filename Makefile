@@ -9,8 +9,6 @@ RM += -r
 
 # Where your irssi include files live. You might need to install an
 # 'irssi-dev' package or something like that.
-IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
-
 MODULE_NAME = test
 
 ### You shouldn't need to edit anything beyond this point ###
@@ -31,6 +29,11 @@ OBJDIR = obj/
 OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 #OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
 
+#INCDIR = include/
+
+IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
+#IRSSI_DIST := $(INCDIR)/irssi
+
 INCLUDE = -I$(IRSSI_DIST) \
           -I$(IRSSI_DIST)/src \
           -I$(IRSSI_DIST)/src/fe-common/core \
@@ -39,7 +42,10 @@ INCLUDE = -I$(IRSSI_DIST) \
           -I$(IRSSI_DIST)/src/irc \
           -I$(IRSSI_DIST)/src/irc/core \
           -I$(IRSSI_DIST)/src/irc/dcc \
-          -I$(IRSSI_DIST)/src/irc/notifylist
+          -I$(IRSSI_DIST)/src/irc/notifylist \
+          #-I$(INCDIR)/libwebsockets/lib \
+          #-I$(INCDIR)/curl/src/ \
+          #-I$(INCDIR)/jansson/src/ \
 
 
 GLIB_CFLAGS = $(shell pkg-config glib-2.0 --cflags)

@@ -2,6 +2,24 @@
 #include <stdlib.h>
 #include <jansson.h>
 #include <string.h>
+#include <stdbool.h>
+
+#include <unistd.h>
+
+#include "protocol.h"
+
+#define UOFF_T_LONG_LONG 1
+#include <irssi/src/core/core.h>
+#include <irssi/src/core/network.h>
+#include <irssi/src/core/net-sendbuffer.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/line-split.h>
+struct _LINEBUF_REC {
+	int len;
+	int alloc;
+	int remove;
+	char *str;
+};
 
 #include "discord.h"
 
@@ -25,7 +43,7 @@ size_t json_write_func(void *ptr, size_t size, size_t nmemb, json_t **root_ptr) 
 #define BASEURL "https://discordapp.com/api/v7"
 
 #define DISCORD_GET_GATEWAY_LINK BASEURL "/gateway"
-const char *get_gateway(void) {
+string get_gateway(void) {
 	CURL *curl = curl_easy_init();
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, DISCORD_GET_GATEWAY_LINK);
@@ -38,26 +56,59 @@ const char *get_gateway(void) {
 	json_t **root_ptr = malloc(0);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, root_ptr);
 	curl_easy_perform(curl); // TODO: check return val
-	const char *gateway = json_string_value(json_object_get(*root_ptr, "url"));
+	string gateway = json_string_value(json_object_get(*root_ptr, "url"));
 	return gateway; // TODO: implement safety
 }
 
 #include "secret.h"
-CURL *authenticate(char *token) {
+
+#define DISCORD_LOGIN_LINK BASEURL "/auth/login"
+token email_login(const char *email, char *password) {
+	json_t *postFields = json_object();
+	json_object_set(postFields, "email", json_string(email));
+	json_object_set(postFields, "password", json_string(password));
+
+	printf("Getting token\n\n");
+
+	curl_global_init(CURL_GLOBAL_DEFAULT);
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		struct curl_slist *chunk = NULL;
+
+		curl_easy_setopt(curl, CURLOPT_URL, DISCORD_LOGIN_LINK);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_dumps(postFields, 0));
+		//curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.42.0");
+		chunk = curl_slist_append(chunk, "Content-Type: application/json");
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, json_write_func);
+
+	} else {
+		printf("curl error\n");
+	}
+	json_t **root_ptr = malloc(0);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, root_ptr);
+	curl_easy_perform(curl); // TODO: check return val
+	token tok = json_string_value(json_object_get(*root_ptr, "token"));
+	curl_easy_cleanup(curl);
+	return tok;
+}
+
+CURL *authenticate(token tok) {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	CURL *curl = curl_easy_init();
 	if (curl) {
 		struct curl_slist *chunk = NULL;
 		const char *auth_header_beginning = "Authorization: ";
-		char auth_header[strlen(auth_header_beginning) + strlen(token)];
+		char auth_header[strlen(auth_header_beginning) + strlen(tok)];
 		strcpy(auth_header, auth_header_beginning);
-		strcat(auth_header, token);
+		strcat(auth_header, tok);
 		chunk = curl_slist_append(chunk, auth_header);
 		chunk = curl_slist_append(chunk, "Content-Type: application/json");
 
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+		//curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 		//curl_easy_setopt(curl, CURLOPT_URL, BASEURL "/users/@me");
 		//curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
@@ -168,6 +219,75 @@ void discord_send_message(group_ID id, string message) {
 	//printf("%s\n", data);
 	curl_easy_cleanup(curl);
 }
+
+/*
+ *
+ * RECEIVING
+ *
+ */
+
+
+#include "irssi.h"
+#define printf(...) printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, __VA_ARGS__)
+string websocket_parse_to_json(string inp) {
+	const char *firstPtr = NULL;
+	const char *lastPtr = NULL;
+
+	for (; inp < inp + strlen(inp); inp++){
+		if (*inp == '{' && firstPtr == NULL) {
+			firstPtr = inp;
+		} else if (*inp == '{' && firstPtr != NULL) {
+			lastPtr = inp;
+		}
+	
+	size_t strsize = lastPtr - firstPtr;
+	char working[strsize + 1];
+	g_strlcpy(working, firstPtr, strsize);
+		//printf("char %d: %s or %d", i, inp[i], inp[i]);
+	}
+	return inp;
+}
+
+
+
+bool discord_websocket_handshake(DISCORD_SERVER_REC *rec) {
+	string headers = "GET /?v=7&encoding=json HTTP/1.1\r\n\
+Upgrade: websocket\r\n\
+Connection: Upgrade\r\n\
+Host: gateway.discord.gg\r\n\
+Origin: wss://gateway.discord.gg\r\n\
+Sec-WebSocket-Key: Rb3UYVkMqK/2+F+EBz4PlA==\r\n\
+Sec-WebSocket-Version: 13\r\n\r\n";
+	net_sendbuffer_send(rec->handle, headers, strlen(headers));
+
+	char tmpbuf[1024];
+	int ret = 0;
+	while (!ret) {
+		ret = net_receive(net_sendbuffer_handle(rec->handle), tmpbuf, sizeof(tmpbuf));
+	}
+	printf("first: %s", tmpbuf);
+	//printf("\n\n\nreceived:");
+	//printf("%i\n", ret);
+	//printf("%.*s", ret, tmpbuf);
+	//printf("\n");
+	//sleep(1);
+	char data[13] = "\x00{'op': 10}\xFF";
+	net_transmit(rec->handle->handle, data, sizeof(data));
+	char tmpbuf2[1024];
+	ret = 0;
+	while (!ret) {
+		ret = net_receive(net_sendbuffer_handle(rec->handle), tmpbuf2, sizeof(tmpbuf2));
+	}
+	printf("hello: %s", websocket_parse_to_json(tmpbuf2));
+	//token = rec->connrec->token
+	printf("token2: %s", rec->connrec->token);
+	//json_error_t error;
+	//json_t *root = json_loads(tmpbuf, 0, &error);
+	//const char heartbeat* = json_string_value(json_object_get(root, "heartbeat"));
+	return TRUE;
+}
+
+
 
 int main() {
 	//token_privmsg(MYTOKEN);

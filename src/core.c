@@ -25,42 +25,37 @@
 
 #include "impl.h"
 
+#include "servers-setup.h"
 
 #include "protocol.h"
 #include "servers.h"
 #include "channels.h"
 #include "queries.h"
-
-
-#include <chatnets.h>
-static CHATNET_REC *create_chatnet(void) {
-	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-	          "create_chatnet");
-	return g_malloc0(sizeof(CHATNET_REC));
-}
-
+#include "chatnets.h"
 
 void test_init() {
 	CHAT_PROTOCOL_REC *rec;
 	rec = g_new0(CHAT_PROTOCOL_REC, 1);
 	rec->name = PROTOCOL_NAME;
 	rec->fullname = "Discord wrapper";
-	rec->chatnet = "test";
+	rec->chatnet = "discord";
 
 	rec->case_insensitive = FALSE;
 
-	rec->create_chatnet = create_chatnet;
-
+	protocol_setup_servers(rec);
 	protocol_init();
 	protocol_init_servers(rec);
+	protocol_init_chatnet(rec);
 	protocol_init_channels(rec);
 	rec->query_create = (QUERY_REC *(*) (const char *, const char *, int)) test_query_create;
 
 	chat_protocol_register(rec);
 	g_free(rec);
 
-	module_register(MODULE_NAME, "core");
 	print_load_message();
+	module_register(MODULE_NAME, "core");
+	//reload_config = 1;
+	//signal_emit("reload", 0);
 }
 
 

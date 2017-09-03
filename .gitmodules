@@ -1,3 +1,12 @@
 [submodule "include/libwebsockets"]
 	path = include/libwebsockets
 	url = https://github.com/warmcat/libwebsockets.git
+[submodule "include/curl"]
+	path = include/curl
+	url = https://github.com/curl/curl.git
+[submodule "include/irssi"]
+	path = include/irssi
+	url = https://github.com/irssi/irssi.git
+[submodule "include/jansson"]
+	path = include/jansson
+	url = https://github.com/akheron/jansson.git

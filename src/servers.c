@@ -12,35 +12,39 @@
 
 #include "discord.h"
 
-static SERVER_CONNECT_REC *create_server_connect(void) {
-	return g_malloc0(sizeof(SERVER_CONNECT_REC));
-}
-
-static SERVER_REC *test_server_init_connect(SERVER_CONNECT_REC *conn) {
+#define IS_NOT_EMPTY(val) (val != NULL && *val != '\0')
+static SERVER_REC *discord_server_init_connect(SERVER_CONNECT_REC *conn) {
+	DISCORD_SERVER_CONNECT_REC *dconn = (DISCORD_SERVER_CONNECT_REC *) conn;
+	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
+						"token: %s", dconn->token);
 	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 	          "test_server_init_connect");
 
-	if (strlen(conn->address) == 0) {
+	if (strlen(dconn->address) == 0) {
 		string gateway = get_gateway();
 		printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
 		          "full gateway string: %s", gateway);
 		char proto_len = strstr(gateway, "//") - gateway;
-		conn->address = strdup((string) (proto_len + gateway + 2));
+		dconn->address = strdup((string) (proto_len + gateway + 2));
 		if (proto_len == 4) {
-			conn->port = 443;
+			dconn->port = 443;
 		} else if (proto_len == 3) {
-			conn->port = 3;
+			dconn->port = 3;
 		}
 
 		printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-		          "addr: %s:%d", conn->address, conn->port);
+		          "addr: %s:%d", dconn->address, dconn->port);
 	}
 
-	SERVER_REC *server = g_new0(SERVER_REC, 1);
+	DISCORD_SERVER_REC *server = g_new0(DISCORD_SERVER_REC, 1);
 
-	server->chat_type=PROTOCOL;
+	//strncpy(server->token, token, 59);
+	//server->token = IS_NOT_EMPTY(token) ? g_strdup(token) : NULL;
 
-	server->connrec = conn;
+
+	server->chat_type = PROTOCOL;
+
+	server->connrec = dconn;
 	server_connect_ref(SERVER_CONNECT(conn));
 
 	server_connect_init((SERVER_REC *) server);
@@ -49,6 +53,10 @@ static SERVER_REC *test_server_init_connect(SERVER_CONNECT_REC *conn) {
 	          conn->address);
 
 	return (SERVER_REC *) server;
+}
+
+static SERVER_CONNECT_REC *create_server_connect(void) {
+	return g_malloc0(sizeof(SERVER_CONNECT_REC));
 }
 
 void test(struct _GIOChannel *huh, void *ptr) {
@@ -78,6 +86,8 @@ static bool ischannel(SERVER_REC *server, const char *data) {
 
 //TODO: signal for "server setup read" to add tokens and/or oath
 
+#define printf(...) printtext(NULL, NULL, MSGLEVEL_CLIENTERROR, __VA_ARGS__)
+
 #include "channels.h"
 static void test_server_connect(SERVER_REC *server) {
 	//void *data = NULL;
@@ -89,17 +99,10 @@ static void test_server_connect(SERVER_REC *server) {
 	server->ischannel = (int (*)(SERVER_REC *, const char *)) ischannel;
 	server->send_message=send_message;
 
-	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-	          "server is connected: %d", server->connected);
-	server->connected = 1;
-	server_start_connect(server); // TODO: handle return
+	//server->connected = 1;
+	int z = server_start_connect(server); // TODO: handle return
+	printf("ret: %d", z);
 	return;
-}
-
-static SERVER_SETUP_REC *create_server_setup(void) {
-	printtext(NULL, NULL, MSGLEVEL_CLIENTERROR,
-	          "server_setup");
-	return g_malloc0(sizeof(SERVER_SETUP_REC));
 }
 
 static void destroy_server_connect(SERVER_CONNECT_REC *conn) {
@@ -109,9 +112,8 @@ static void destroy_server_connect(SERVER_CONNECT_REC *conn) {
 
 
 void protocol_init_servers(CHAT_PROTOCOL_REC *rec) {
-	rec->server_init_connect = test_server_init_connect;
+	rec->server_init_connect = discord_server_init_connect;
 	rec->server_connect = test_server_connect;
 	rec->create_server_connect = create_server_connect;
-	rec->create_server_setup = create_server_setup;
 	rec->destroy_server_connect = destroy_server_connect;
 }
