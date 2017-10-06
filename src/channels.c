@@ -42,18 +42,26 @@ static void join(DISCORD_SERVER_REC *server, const char *name, int automatic) {
 	printf("%s", json_dumps(root, 0));
 	byte chan_type = json_integer_value(json_object_get(root, "type"));
 
-	if ( chan_type == GUILD_TEXT ) {
-		//name = "test";
-		//visible_name = json_string_value(json_object_get(json_array_get(json_object_get(root, "recipients"), 0), "username")); // TODO: clean up
-		printf("guild text");
-		char *channel_name = g_strdup(json_string_value(json_object_get(root, "name"))); // TODO: clean up
+	switch(chan_type) {
+		case GUILD_TEXT: {
+			printf("Is a group text");
+			const char *channel_name = json_string_value(json_object_get(root, "name")); // TODO: clean up
 
-		json_t *guilds = discord_get_guild_info(server->tok, json_string_value(json_object_get(root, "guild_id"))); // TODO: clean up
-		char *guild_name = g_strdup(json_string_value(json_object_get(guilds, "name"))); // TODO: clean up
-		visible_name = g_strdup_printf("%s/%s", guild_name, channel_name);
-	} else {
-		printf("group chat");
+			json_t *guilds = discord_get_guild_info(server->tok, json_string_value(json_object_get(root, "guild_id"))); // TODO: clean up
+			const char *guild_name = json_string_value(json_object_get(guilds, "name")); // TODO: clean up
+			visible_name = g_strdup_printf("%s/%s", guild_name, channel_name);
+			break;
+		}
+		case DM: {
+			chat_protocol_find(server->tag)->query_create(server->tag, name, automatic);
+			return;
+		}
+		default :
+			printf("not found: %d", chan_type);
+			visible_name="None";
+			break;
 	}
+	printf("visible name is %s", visible_name);
 	create(server, name, visible_name, automatic);
 }
 
