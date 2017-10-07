@@ -31,6 +31,8 @@ void fill_conn(DISCORD_SERVER_CONNECT_REC *conn, DISCORD_SERVER_SETUP_REC *sserv
 	//if (sserver->tok != NULL && conn->tok == NULL) 
 	// ^^^ XXX This breaks stuff and I dont want to debug XXX ^^^
 	conn->tok = g_strdup(sserver->tok);
+
+	conn->nick = g_strdup(conn->username); // TODO: need better place for this
 }
 
 #include <irssi/src/core/signals.h>
