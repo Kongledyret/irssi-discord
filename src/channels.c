@@ -34,6 +34,7 @@ static CHANNEL_REC * create(DISCORD_SERVER_REC *server,
 	return rec;
 }
 
+#include <irssi/src/fe-common/core/module-formats.h>
 static void join(DISCORD_SERVER_REC *server, const char *name, int automatic) {
 	debug();
 	char *visible_name;
@@ -61,8 +62,20 @@ static void join(DISCORD_SERVER_REC *server, const char *name, int automatic) {
 			visible_name="None";
 			break;
 	}
-	printf("visible name is %s", visible_name);
+	json_decref(root);
 	create(server, name, visible_name, automatic);
+
+	root = discord_get_message_history(server->tok, name);
+	for (size_t index = json_array_size(root) - 1; index < -1LL; index--) {
+		json_t *message = json_array_get(root, index);
+		const char *text_msg = json_string_value(json_object_get(message, "content"));
+		const char *username = json_string_value(json_object_get(json_object_get(message, "author"), "username"));
+		printformat_module("fe-common/core", server, name, MSGLEVEL_PUBLIC,
+			TXT_PUBMSG, username, text_msg, "");
+	}
+	/*
+		printf("%d", index);
+			*/
 }
 
 static bool is_channel(SERVER_REC *server, const char *data) {
