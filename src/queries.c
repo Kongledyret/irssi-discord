@@ -61,7 +61,16 @@ static void sig_created(DISCORD_QUERY_REC *query, int automatic) {
 	json_t *root = discord_get_channel_info(query->server->tok, query->name); /*Dont move this to  creation, small bugs*/
 	query->visible_name = g_strdup(json_string_value(json_object_get(json_array_get(json_object_get(root, "recipients"), 0), "username")));
 }
+
+/*
+	printformat_module_window("fe-common/core", dest->window, MSGLEVEL_ALL, 
+			TXT_PUBMSG_CHANNEL, "msirabella", "optarget", text, "nickmode");
 */
+
+//#include <irssi/core/signals.h>
+void sig_history_changed(WINDOW_REC *window, const char *name) {
+	debug();
+}
 
 void queries_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->query_create = (QUERY_REC *(*)(const char *, const char *, int)) create;
@@ -69,9 +78,8 @@ void queries_protocol_init(CHAT_PROTOCOL_REC *rec) {
 
 #include <irssi/core/signals.h>
 
-/*
 void queries_signals_init(void) {
 	signal_add("query created", (SIGNAL_FUNC) sig_created);
+	signal_add("window history changed", (SIGNAL_FUNC) sig_history_changed);
 }
-*/
 

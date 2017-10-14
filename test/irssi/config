@@ -6,7 +6,8 @@ servers = (
     chatnet = "Discord";
     tls = "yes";
     tls_verify = "yes";
-		token = "<TOKEN>";
+    token = "<TOKEN>";
+    #autoconnect = "yes";
   },
   { address = "echo.websockets.org"; port = "80"; chatnet = "echo"; },
   { address = "localhost"; port = "1234"; chatnet = "localhost"; }
@@ -16,19 +17,23 @@ chatnets = {
   Discord = {
     type = "Discord";
     username = "mjsir911";
+    email = "msirabel@gmail.com";
   };
-  echo = { type = "Discord"; };
-  localhost = { type = "Discord"; };
 };
 
 channels = (
-  { 
-    name = "343599756821397504";
+  {
+    id = "343599756821397504";
+    name = "Mr_Twenty_7";
     chatnet = "Discord";
     autojoin = "Yes";
+  },
+  {
+    id = "337652953169002526";
+    name = "general";
+    chatnet = "Discord";
   }
 );
-
 settings = {
   core = {
     real_name = "Marco Sirabella";

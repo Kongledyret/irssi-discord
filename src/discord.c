@@ -51,7 +51,9 @@ curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, fwrite);
 
 size_t json_data(void *buffer, size_t size, size_t nmemb, json_t **root) {
 	json_error_t error;
+	printf(buffer);
 	*root = json_loads(buffer, 0, &error);
+	//printf("%s", json_dumps(*root, 0));
 	return size * nmemb;
 }
 
@@ -84,6 +86,7 @@ size_t string_data(void *buffer, size_t size, size_t nmemb, char **msg) {
 	return size * nmemb;
 }
 
+#include <stdio.h>
 static json_t *generic_get_request(token tok, string URL) {
 	curl_global_init(CURL_GLOBAL_ALL);
 	CURL *curl = curl_easy_init();

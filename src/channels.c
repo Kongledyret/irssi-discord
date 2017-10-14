@@ -78,7 +78,7 @@ static void join(DISCORD_SERVER_REC *server, const char *name, int automatic) {
 			*/
 }
 
-static bool is_channel(SERVER_REC *server, const char *data) {
+static bool is_channel(DISCORD_SERVER_REC *server, const char *data) {
 	debug();
 	return true;
 }

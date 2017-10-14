@@ -11,7 +11,8 @@
 
 static DISCORD_CHATNET_REC *create(void) {
 	debug();
-	return g_new0(DISCORD_CHATNET_REC, 1);
+	DISCORD_CHATNET_REC *rec = g_new0(DISCORD_CHATNET_REC, 1);
+	return rec;
 }
 
 void chatnets_protocol_init(CHAT_PROTOCOL_REC *rec) {
