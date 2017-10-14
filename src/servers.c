@@ -1,11 +1,11 @@
 #include "servers.h"
 #include "core.h"
 
-#include <irssi/common.h>
-#include <irssi/core/signals.h>
-#include <irssi/core/chat-protocols.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/signals.h>
+#include <irssi/src/core/chat-protocols.h>
 
-#include <irssi/core/servers.h>
+#include <irssi/src/core/servers.h>
 
 #include "utils.h"
 

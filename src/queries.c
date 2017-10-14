@@ -1,17 +1,17 @@
 #include "queries.h"
 #include "core.h"
 
-#include <irssi/common.h>
-#include <irssi/core/chat-protocols.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/chat-protocols.h>
 
-#include <irssi/core/queries.h>
+#include <irssi/src/core/queries.h>
 
 #include "utils.h"
 
 #include "discord.h"
 #include <jansson.h>
 
-#include <irssi/fe-common/core/module-formats.h>
+#include <irssi/src/fe-common/core/module-formats.h>
 
 static DISCORD_QUERY_REC *create(const char *server_tag,
                                  const char *nick,
@@ -76,7 +76,7 @@ void queries_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->query_create = (QUERY_REC *(*)(const char *, const char *, int)) create;
 }
 
-#include <irssi/core/signals.h>
+#include <irssi/src/core/signals.h>
 
 void queries_signals_init(void) {
 	signal_add("query created", (SIGNAL_FUNC) sig_created);

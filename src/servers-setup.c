@@ -1,10 +1,10 @@
 #include "servers-setup.h"
 #include "core.h"
 
-#include <irssi/common.h>
-#include <irssi/core/chat-protocols.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/chat-protocols.h>
 
-#include <irssi/core/servers-setup.h>
+#include <irssi/src/core/servers-setup.h>
 
 #include "utils.h"
 
@@ -17,7 +17,7 @@ void servers_setup_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->create_server_setup = (SERVER_SETUP_REC *(*)(void)) create;
 }
 
-#include <irssi/lib-config/iconfig.h>
+#include <irssi/src/lib-config/iconfig.h>
 
 static void read_config(DISCORD_SERVER_SETUP_REC *proto, CONFIG_NODE *node) {
 	debug();
@@ -35,7 +35,7 @@ void fill_conn(DISCORD_SERVER_CONNECT_REC *conn, DISCORD_SERVER_SETUP_REC *sserv
 	conn->nick = g_strdup(conn->username); // TODO: need better place for this
 }
 
-#include <irssi/core/signals.h>
+#include <irssi/src/core/signals.h>
 
 void servers_setup_signals_init(void) {
 	signal_add("server setup read", (SIGNAL_FUNC) read_config);

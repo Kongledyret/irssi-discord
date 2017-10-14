@@ -20,14 +20,14 @@ void chatnets_protocol_init(CHAT_PROTOCOL_REC *rec) {
 	rec->create_chatnet = (CHATNET_REC *(*)(void))create;
 }
 
-#include <irssi/lib-config/iconfig.h>
+#include <irssi/src/lib-config/iconfig.h>
 
 static void read_config(DISCORD_CHATNET_REC *rec, CONFIG_NODE *node) {
 	debug();
 	rec->email = config_node_get_str(node, "email", NULL);
 }
 
-#include <irssi/core/signals.h>
+#include <irssi/src/core/signals.h>
 
 void chatnets_signals_init(void) {
 	signal_add("chatnet read", (SIGNAL_FUNC) read_config);

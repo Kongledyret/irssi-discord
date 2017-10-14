@@ -1,6 +1,6 @@
 #include "signals.h"
 
-#include <irssi/core/signals.h>
+#include <irssi/src/core/signals.h>
 
 #include "chatnets.h"
 #include "servers-setup.h"

@@ -31,7 +31,7 @@ CFLAGS = -Wall -Werror -g -D NAME=\"$(NAME)\" -D"UOFF_T_LONG_LONG=1"
 LDFLAGS = -flat_namespace -undefined suppress
 
 #IRSSI_DIST := $(shell echo $$IRSSI_INCLUDE)
-IRSSI_DIST := $(INCDIR)/irssi
+IRSSI_DIST := $(INCDIR)/irssi/src
 
 INCLUDE = -I $(INCDIR) \
           -I $(IRSSI_DIST)/core/ -I $(IRSSI_DIST)/ # src/utils.h

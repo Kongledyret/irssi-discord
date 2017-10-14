@@ -1,9 +1,9 @@
 #include "channels-setup.h"
 
-#include <irssi/common.h>
-#include <irssi/core/chat-protocols.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/chat-protocols.h>
 
-#include <irssi/core/channels-setup.h>
+#include <irssi/src/core/channels-setup.h>
 
 #include "utils.h"
 

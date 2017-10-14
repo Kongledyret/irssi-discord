@@ -1,6 +1,6 @@
 #include "core.h"
-#include <irssi/common.h>
-#include <irssi/core/modules.h>
+#include <irssi/src/common.h>
+#include <irssi/src/core/modules.h>
 
 #include "utils.h"
 
