@@ -1,8 +1,8 @@
 #include "protocol.h"
 #include "core.h"
 
-#include <irssi/src/common.h>
-#include <irssi/src/core/chat-protocols.h>
+#include <irssi/common.h>
+#include <irssi/core/chat-protocols.h>
 
 #include "utils.h"
 

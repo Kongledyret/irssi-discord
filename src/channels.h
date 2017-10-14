@@ -1,5 +1,5 @@
-#include <irssi/src/common.h>
-#include <irssi/src/core/chat-protocols.h>
+#include <irssi/common.h>
+#include <irssi/core/chat-protocols.h>
 
 #include <stdbool.h>
 

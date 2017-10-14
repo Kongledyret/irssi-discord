@@ -3,12 +3,12 @@
 
 #include <stdbool.h>
 
-#include <irssi/src/common.h>
-#include <irssi/src/core/signals.h>
-#include <irssi/src/core/chat-protocols.h>
+#include <irssi/common.h>
+#include <irssi/core/signals.h>
+#include <irssi/core/chat-protocols.h>
 
-#include <irssi/src/core/channels.h>
-#include <irssi/src/core/servers.h>
+#include <irssi/core/channels.h>
+#include <irssi/core/servers.h>
 
 #include "utils.h"
 
@@ -34,7 +34,7 @@ static CHANNEL_REC * create(DISCORD_SERVER_REC *server,
 	return rec;
 }
 
-#include <irssi/src/fe-common/core/module-formats.h>
+#include <irssi/fe-common/core/module-formats.h>
 static void join(DISCORD_SERVER_REC *server, const char *name, int automatic) {
 	debug();
 	char *visible_name;

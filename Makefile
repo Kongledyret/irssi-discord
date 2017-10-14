@@ -34,7 +34,7 @@ LDFLAGS = -flat_namespace -undefined suppress
 IRSSI_DIST := $(INCDIR)/irssi
 
 INCLUDE = -I $(INCDIR) \
-          -I $(IRSSI_DIST)/src/core/ -I $(IRSSI_DIST)/src/ # src/utils.h
+          -I $(IRSSI_DIST)/core/ -I $(IRSSI_DIST)/ # src/utils.h
 #LIBRARY = 
 
 # For libcurl
